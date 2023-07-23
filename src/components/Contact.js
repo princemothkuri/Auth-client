@@ -7,8 +7,10 @@ import MailIcon from "@mui/icons-material/Mail";
 import PhoneIcon from "@mui/icons-material/Phone";
 import MessageIcon from "@mui/icons-material/Message";
 import Loading from "./Loading";
+import { useSelector } from "react-redux";
 
 const Contact = () => {
+  const count = useSelector((state) => state.counter.value);
   const [loadingModal, setLoadingMoadal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({
@@ -57,37 +59,74 @@ const Contact = () => {
   const SubmitData = async (e) => {
     e.preventDefault();
     const { name, email, tel, message } = userData;
-    try {
-      setLoadingMoadal(true);
-      const res = await fetch("/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          tel,
-          message,
-        }),
-      });
+    // let path = "";
 
-      const data = await res.json();
-      // console.log(data.status);
-      if (data.status === 422) {
-        toast.warning("Message not Sent!");
-        setLoadingMoadal(false);
-        // window.alert("Message not Sent!");
-        console.log("Message not Sent!");
-      } else {
-        toast.success("Message Sent!");
-        setLoadingMoadal(false);
-        // window.alert("Message Sent!");
-        console.log("Message Sent!");
-        setUserData({ ...userData, message: "" });
+    if (count) {
+      try {
+        setLoadingMoadal(true);
+        const res = await fetch("/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            tel,
+            message,
+          }),
+        });
+
+        const data = await res.json();
+        // console.log(data.status);
+        if (data.status === 422) {
+          toast.warning("Message not Sent!");
+          setLoadingMoadal(false);
+          // window.alert("Message not Sent!");
+          console.log("Message not Sent!");
+        } else {
+          toast.success("Message Sent!");
+          setLoadingMoadal(false);
+          // window.alert("Message Sent!");
+          console.log("Message Sent!");
+          setUserData({ ...userData, message: "" });
+        }
+      } catch (err) {
+        console.error(err.message);
       }
-    } catch (err) {
-      console.error(err.message);
+    } else {
+      try {
+        setLoadingMoadal(true);
+        const res = await fetch("/nucontact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            tel,
+            message,
+          }),
+        });
+
+        const data = await res.json();
+        // console.log(data.status);
+        if (data.message === "Server error!") {
+          toast.warning("Message not Sent!");
+          setLoadingMoadal(false);
+          // window.alert("Message not Sent!");
+          console.log("Message not Sent!");
+        } else {
+          toast.success("Message Sent!");
+          setLoadingMoadal(false);
+          // window.alert("Message Sent!");
+          console.log("Message Sent!");
+          setUserData({ ...userData, message: "" });
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
     }
   };
 
