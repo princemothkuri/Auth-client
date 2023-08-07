@@ -42,7 +42,7 @@ const Navbar = () => {
             href="/"
             style={{ fontSize: "2rem", fontWeight: "bolder" }}
           >
-            Prince
+            <img src="./images/logo2.PNG" alt="logo" width="180" />
           </a>
           <div className="d-flex input-group w-auto">
             <ul className="menu float-md-end">
